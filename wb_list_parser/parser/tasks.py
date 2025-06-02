@@ -1,4 +1,3 @@
-# parser/tasks.py
 from celery import shared_task
 from django.db import transaction
 from .models import (
@@ -21,13 +20,10 @@ def parse_one_product(articul: str) -> str:
         url  = parser.get_prod_link(articul)
         data = parser.parse_page(url)
 
-        # если WB не вернул данных
         if not data:
             return "empty"
 
-        # ---------- База ----------
         with transaction.atomic():
-
             # 1. Категория (может быть None)
             category_obj = None
             if (category_name := data.get("category")):

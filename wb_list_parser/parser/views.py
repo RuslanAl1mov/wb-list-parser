@@ -47,7 +47,6 @@ class ProductsParserAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Отправляем каждый артикул отдельно в Celery
         task_ids = [parse_one_product.delay(a).id for a in articules]
 
         return Response(
