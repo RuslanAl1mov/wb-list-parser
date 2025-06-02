@@ -1,11 +1,13 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .tasks import parse_one_product
 
 from .models import Product, ProductCategory, ParserHistory
 from .serializers import ProductSerializer, ProductCategorySerializer, ParserHistorySerializer
+from .filters import ProductFilter
 
 
 class ProductListAPIView(generics.ListAPIView):
@@ -14,6 +16,19 @@ class ProductListAPIView(generics.ListAPIView):
     """
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+    
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = ProductFilter
+    search_fields = ["name", "articul", "category__name"]
+    
+    
+class ProductRetrieveAPIView(generics.RetrieveAPIView):
+    """
+    GET /api/v1/parser/products/<int:pk> - детальная информация о товаре
+    """
+
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 
 class ProductCategoryListAPIView(generics.ListAPIView):

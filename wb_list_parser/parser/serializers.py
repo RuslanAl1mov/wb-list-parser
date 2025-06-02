@@ -44,7 +44,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ParserHistorySerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)
+    product = serializers.CharField(source="product.name", read_only=True)
 
     class Meta:
         model  = ParserHistory
